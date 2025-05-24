@@ -325,7 +325,7 @@ describe('Node Creator', () => {
 			nodeCreatorFeature.getters.getCategoryItem('Actions').click();
 			nodeCreatorFeature.getters.getCreatorItem('Create a credential').click();
 			NDVModal.actions.close();
-			WorkflowPage.actions.deleteNode('When clicking ‘Test workflow’');
+			WorkflowPage.actions.deleteNode('When clicking ‘Execute workflow’');
 			WorkflowPage.getters.canvasNodePlusEndpointByName('n8n').click();
 			nodeCreatorFeature.getters.searchBar().find('input').clear().type('n8n');
 			nodeCreatorFeature.getters.getCreatorItem('n8n').click();
@@ -559,7 +559,7 @@ describe('Node Creator', () => {
 		addNodeToCanvas('Question and Answer Chain', true);
 		addRetrieverNodeToParent('Vector Store Retriever', 'Question and Answer Chain');
 		cy.realPress('Escape');
-		addVectorStoreNodeToParent('In-Memory Vector Store', 'Vector Store Retriever');
+		addVectorStoreNodeToParent('Simple Vector Store', 'Vector Store Retriever');
 		cy.realPress('Escape');
 		WorkflowPage.getters.canvasNodes().should('have.length', 4);
 	});
@@ -569,7 +569,7 @@ describe('Node Creator', () => {
 		addNodeToCanvas(AGENT_NODE_NAME, true, true);
 		clickGetBackToCanvas();
 
-		addVectorStoreToolToParent('In-Memory Vector Store', AGENT_NODE_NAME);
+		addVectorStoreToolToParent('Simple Vector Store', AGENT_NODE_NAME);
 	});
 
 	it('should insert node to canvas with sendAndWait operation selected', () => {

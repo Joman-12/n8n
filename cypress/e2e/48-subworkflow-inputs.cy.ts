@@ -8,6 +8,7 @@ import {
 	getParameterInputByName,
 	populateFixedCollection,
 	selectResourceLocatorItem,
+	selectResourceLocatorAddResourceItem,
 	typeIntoFixedCollectionItem,
 	clickWorkflowCardContent,
 	assertOutputTableContent,
@@ -55,13 +56,16 @@ describe('Sub-workflow creation and typed usage', () => {
 
 		openNode('Execute Workflow');
 
+		let openedUrl = '';
+
 		// Prevent sub-workflow from opening in new window
 		cy.window().then((win) => {
 			cy.stub(win, 'open').callsFake((url) => {
-				cy.visit(url);
+				openedUrl = url;
 			});
 		});
-		selectResourceLocatorItem('workflowId', 0, 'Create a');
+		selectResourceLocatorAddResourceItem('workflowId', 'Create a');
+		cy.then(() => cy.visit(openedUrl));
 		// **************************
 		// NAVIGATE TO CHILD WORKFLOW
 		// **************************
@@ -90,8 +94,8 @@ describe('Sub-workflow creation and typed usage', () => {
 		clickExecuteNode();
 
 		const expected = [
-			['-1', 'A String', '0:11:true2:3', 'aKey:-1', '[empty object]', 'false'],
-			['-1', 'Another String', '[empty array]', 'aDifferentKey:-1', '[empty array]', 'false'],
+			['-1', 'A String', '0:11:true2:3', 'aKey:-1', '[empty object]', 'true'],
+			['-1', 'Another String', '[empty array]', 'aDifferentKey:-1', '[empty array]', 'true'],
 		];
 		assertOutputTableContent(expected);
 
@@ -110,8 +114,8 @@ describe('Sub-workflow creation and typed usage', () => {
 		clickExecuteNode();
 
 		const expected2 = [
-			['-1', '5', '0:11:true2:3', 'aKey:-1', '[empty object]', 'false'],
-			['-1', '5', '[empty array]', 'aDifferentKey:-1', '[empty array]', 'false'],
+			['-1', '5', '0:11:true2:3', 'aKey:-1', '[empty object]', 'true'],
+			['-1', '5', '[empty array]', 'aDifferentKey:-1', '[empty array]', 'true'],
 		];
 
 		assertOutputTableContent(expected2);
@@ -139,7 +143,7 @@ describe('Sub-workflow creation and typed usage', () => {
 		cy.window().then((win) => {
 			cy.stub(win, 'open').callsFake((url) => {
 				cy.visit(url);
-				selectResourceLocatorItem('workflowId', 0, 'Create a');
+				selectResourceLocatorAddResourceItem('workflowId', 'Create a');
 
 				openNode('When Executed by Another Workflow');
 
@@ -167,8 +171,8 @@ describe('Sub-workflow creation and typed usage', () => {
 				);
 
 				assertOutputTableContent([
-					['[null]', '[null]', '[null]', '[null]', '[null]', 'false'],
-					['[null]', '[null]', '[null]', '[null]', '[null]', 'false'],
+					['[null]', '[null]', '[null]', '[null]', '[null]', 'true'],
+					['[null]', '[null]', '[null]', '[null]', '[null]', 'true'],
 				]);
 
 				clickExecuteNode();
@@ -215,7 +219,7 @@ function validateAndReturnToParent(targetChild: string, offset: number, fields: 
 
 	// Note that outside of e2e tests this will be pre-selected correctly.
 	// Due to our workaround to remain in the same tab we need to select the correct tab manually
-	selectResourceLocatorItem('workflowId', offset, targetChild);
+	selectResourceLocatorItem('workflowId', offset - 1, targetChild);
 
 	clickExecuteNode();
 
